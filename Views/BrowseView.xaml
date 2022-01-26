@@ -1,0 +1,123 @@
+﻿<UserControl x:Class="Kvfx.Views.BrowseView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:cal="clr-namespace:Caliburn.Micro;assembly=Caliburn.Micro.Platform"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:local="clr-namespace:Kvfx"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <Grid Background="{ StaticResource BackgroundBrush }">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.Resources>
+            <Style x:Key="ContentControl" TargetType="ItemsControl">
+                <Setter Property="Background" Value="{ StaticResource BackgroundBrush }"/>
+                <Setter Property="Padding" Value="10 5 0 15"/>
+
+                <Setter Property="ItemsControl.ItemsPanel">
+                    <Setter.Value>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="1"/>
+                        </ItemsPanelTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="ContentTag" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="24"/>
+                <Setter Property="Foreground" Value="{ StaticResource AccentBrush }"/>
+                <Setter Property="Margin" Value="20 0 0 5"/>
+            </Style>
+
+            <Style x:Key="ContentViewer" TargetType="ScrollViewer">
+                <Setter Property="HorizontalScrollBarVisibility" Value="Hidden"/>
+                <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+            </Style>
+
+            <Style x:Key="PanelControl" TargetType="ItemsControl">
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                <Setter Property="Margin" Value="0 0 0 10"/>
+
+                <Setter Property="ItemsControl.ItemsPanel">
+                    <Setter.Value>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Rows="1"/>
+                        </ItemsPanelTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="MovieButton" TargetType="Button">
+                <Setter Property="FontSize" Value="28"/>
+            </Style>
+
+            <Style x:Key="TitlePanel" TargetType="StackPanel">
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="MaxWidth" Value="200"/>
+                <Setter Property="Orientation" Value="Vertical"/>
+            </Style>
+
+            <Style x:Key="TitleText" TargetType="TextBlock">
+                <Setter Property="Foreground" Value="{ StaticResource ForegroundBrush }"/>
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="TextAlignment" Value="Center"/>
+                <Setter Property="TextWrapping" Value="Wrap"/>
+            </Style>
+        </Grid.Resources>
+
+        <ScrollViewer Grid.Row="0" Style="{ StaticResource ContentViewer }">
+            <i:Interaction.Triggers>
+                <local:RoutedEventTrigger RoutedEvent="ScrollViewer.ScrollChanged">
+                    <cal:ActionMessage MethodName="TryScrollbarHandle">
+                        <cal:Parameter Value="$source"/>
+                    </cal:ActionMessage>
+                </local:RoutedEventTrigger>
+            </i:Interaction.Triggers>
+            
+            <StackPanel Orientation="Vertical">
+                <ItemsControl ItemsSource="{ Binding Panels }" Style="{ StaticResource ContentControl }">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Grid.Row="0" Text="{ Binding Tag }" Style="{ StaticResource ContentTag }"/>
+
+                                <ItemsControl Grid.Row="1" ItemsSource="{ Binding Content }" Style="{ StaticResource PanelControl }">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Vertical">
+                                                <Button Height="300" Width="200" Margin="20 0">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="Click">
+                                                            <cal:ActionMessage MethodName="ContentButtonClick">
+                                                                <cal:Parameter Value="{ Binding }"/>
+                                                            </cal:ActionMessage>
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+
+                                                    <Image Source="{ Binding PosterImage, IsAsync=True}" Width="200" Height="300"/>
+                                                </Button>
+
+                                                <StackPanel Style="{ StaticResource TitlePanel }">
+                                                    <TextBlock Text="{ Binding Title }" Style="{ StaticResource TitleText }"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <Separator x:Name="PanelSeperator" Background="{ StaticResource AccentBrush }" Height="5"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
